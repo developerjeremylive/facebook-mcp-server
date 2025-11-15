@@ -201,3 +201,69 @@ class FacebookAPI:
             "total_media_processed": len(media_urls),
             "results": story_responses
         }
+    
+    def post_video_to_facebook(self, video_url: str, content_prompt: str) -> dict[str, Any]:
+        """Post a video with viral copyright text generated from a content prompt.
+        
+        Args:
+            video_url: URL to the video (local file path or HTTPS URL)
+            content_prompt: Description of the video content to generate viral copyright text
+        
+        Returns:
+            dict: Response from Facebook Graph API with generated copyright text
+        """
+        # Verify it's a video file
+        media_type = self._get_media_type(video_url)
+        
+        if media_type != "video":
+            return {
+                "error": f"Invalid media type. Expected video, got: {media_type}",
+                "supported_formats": "Videos: MP4, MOV, AVI, MKV, WebM",
+                "provided_url": video_url
+            }
+        
+        # Generate viral copyright text based on content prompt
+        viral_copyright_text = self._generate_viral_copyright_text(content_prompt)
+        
+        # Post video with generated copyright text
+        params = {
+            "source": video_url,
+            "description": viral_copyright_text,
+            "published": True,
+            "content_category": "OTHER"
+        }
+        
+        response = self._request("POST", f"{PAGE_ID}/videos", params)
+        
+        # Add the generated text to the response for reference
+        if "error" not in response:
+            response["generated_copyright_text"] = viral_copyright_text
+            response["original_prompt"] = content_prompt
+        
+        return response
+    
+    def _generate_viral_copyright_text(self, content_prompt: str) -> str:
+        """Generate viral copyright text based on content description.
+        
+        Args:
+            content_prompt: Description of the video content
+            
+        Returns:
+            str: Generated viral copyright text for Facebook
+        """
+        # Viral copyright text templates with engaging elements
+        viral_templates = [
+            f"🔥 {content_prompt} 🔥\n\n✨ CONTENIDO ORIGINAL EXCLUSIVO ✨\n\n© Todos los derechos reservados. Este video es propiedad intelectual protegida.\n\n🚫 PROHIBIDA su reproducción, distribución o uso sin autorización expresa.\n\n💯 ¡COMPARTE si te gustó! 👇\n\n#ViralContent #Original #Copyright #Exclusive",
+            
+            f"🎬 {content_prompt} 🎬\n\n⚡ CONTENIDO VIRAL ORIGINAL ⚡\n\n🔒 Material protegido por derechos de autor\n© Creación original - Todos los derechos reservados\n\n❌ NO se permite copiar, descargar o redistribuir\n✅ SÍ se permite compartir desde esta publicación\n\n🔥 ¡Dale LIKE y COMPARTE! 🔥\n\n#Viral #Original #Protected #ShareDontSteal",
+            
+            f"💥 {content_prompt} 💥\n\n🌟 CONTENIDO EXCLUSIVO Y ORIGINAL 🌟\n\n⚠️ AVISO LEGAL:\n© Este video está protegido por derechos de autor\n🚫 Prohibida su descarga o reutilización\n✅ Permitido compartir desde aquí\n\n🔥 ¡Si te encantó, COMPÁRTELO! 🔥\n👆 ¡Y no olvides seguirnos para más contenido!\n\n#ExclusiveContent #Copyright #ViralVideo #Original",
+            
+            f"🚀 {content_prompt} 🚀\n\n✨ MATERIAL ORIGINAL PROTEGIDO ✨\n\n📝 TÉRMINOS DE USO:\n• © Contenido con derechos reservados\n• 🚫 No descargar ni reutilizar\n• ✅ Compartir desde esta publicación\n• 💬 Comentar y etiquetar amigos\n\n🔥 ¡HAZLO VIRAL compartiendo! 🔥\n\n#OriginalContent #Viral #Copyright #ShareTheJoy"
+        ]
+        
+        # Select a random template or rotate based on content
+        import random
+        selected_template = random.choice(viral_templates)
+        
+        return selected_template

@@ -301,3 +301,22 @@ def create_storie_list_media(media_urls: list[str]) -> dict[str, Any]:
     """
     return manager.create_storie_list_media(media_urls)
 
+@mcp.tool()
+def post_video_to_facebook(video_url: str, content_prompt: str) -> dict[str, Any]:
+    """Post a video with viral copyright text generated from a content description.
+    Input: video_url (str), content_prompt (str)
+    Output: dict with video post creation result and generated copyright text
+    
+    The video_url can be:
+    - HTTPS URL to a video file
+    - Local file path (will be treated as URL by Facebook API)
+    - Supported formats: MP4, MOV, AVI, MKV, WebM
+    
+    The content_prompt should describe what the video is about, and the tool will generate
+    viral copyright text with engaging elements like emojis, legal notices, and call-to-actions.
+    
+    Example content_prompt: "Tutorial de cocina para hacer pizza casera"
+    This will generate viral copyright text with legal protection and engagement elements.
+    """
+    return manager.post_video_to_facebook(video_url, content_prompt)
+

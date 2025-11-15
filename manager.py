@@ -172,3 +172,15 @@ class Manager:
             dict: Response with results from all story creations
         """
         return self.api.create_storie_list_media(media_urls)
+    
+    def post_video_to_facebook(self, video_url: str, content_prompt: str) -> dict[str, Any]:
+        """Post a video with viral copyright text generated from a content prompt.
+        
+        Args:
+            video_url: URL to the video (can be local path or HTTPS URL)
+            content_prompt: Description of the video content to generate viral copyright text
+        
+        Returns:
+            dict: Response from Facebook Graph API with generated copyright text
+        """
+        return self.api.post_video_to_facebook(video_url, content_prompt)
