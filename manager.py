@@ -103,6 +103,19 @@ class Manager:
     def send_dm_to_user(self, user_id: str, message: str) -> dict[str, Any]:
         return self.api.send_dm_to_user(user_id, message)
     
+    def send_dm_media_to_user(self, user_id: str, message: str, media_urls: list[str]) -> dict[str, Any]:
+        """Send a direct message with media attachments to a user.
+        
+        Args:
+            user_id: The recipient's Facebook user ID
+            message: Text message to send along with media
+            media_urls: List of URLs to images or videos (can be local paths or HTTPS URLs)
+        
+        Returns:
+            dict: Combined response from text and media messages
+        """
+        return self.api.send_dm_media_to_user(user_id, message, media_urls)
+    
     def update_post(self, post_id: str, new_message: str) -> dict[str, Any]:
         return self.api.update_post(post_id, new_message)
 

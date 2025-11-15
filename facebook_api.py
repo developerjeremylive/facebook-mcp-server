@@ -59,6 +59,80 @@ class FacebookAPI:
         }
         return self._request("POST", "me/messages", {}, json=payload)
     
+    def send_dm_media_to_user(self, user_id: str, message: str, media_urls: list[str]) -> dict[str, Any]:
+        """Send a direct message with media attachments to a user.
+        
+        Args:
+            user_id: The recipient's Facebook user ID
+            message: Text message to send
+            media_urls: List of URLs to images or videos (local file paths or HTTPS URLs)
+        
+        Returns:
+            dict: Response from Facebook Messenger API
+        """
+        # First send the text message
+        text_response = self.send_dm_to_user(user_id, message)
+        
+        # Then send each media attachment
+        media_responses = []
+        for media_url in media_urls:
+            # Determine if it's an image or video based on file extension
+            media_type = self._get_media_type(media_url)
+            
+            if media_type == "image":
+                payload = {
+                    "recipient": {"id": user_id},
+                    "message": {
+                        "attachment": {
+                            "type": "image",
+                            "payload": {"url": media_url, "is_reusable": True}
+                        }
+                    },
+                    "messaging_type": "RESPONSE"
+                }
+            elif media_type == "video":
+                payload = {
+                    "recipient": {"id": user_id},
+                    "message": {
+                        "attachment": {
+                            "type": "video",
+                            "payload": {"url": media_url, "is_reusable": True}
+                        }
+                    },
+                    "messaging_type": "RESPONSE"
+                }
+            else:
+                # Fallback to file attachment for other types
+                payload = {
+                    "recipient": {"id": user_id},
+                    "message": {
+                        "attachment": {
+                            "type": "file",
+                            "payload": {"url": media_url, "is_reusable": True}
+                        }
+                    },
+                    "messaging_type": "RESPONSE"
+                }
+            
+            response = self._request("POST", "me/messages", {}, json=payload)
+            media_responses.append({"media_url": media_url, "response": response})
+        
+        return {
+            "text_message": text_response,
+            "media_messages": media_responses,
+            "total_media_sent": len(media_urls)
+        }
+    
+    def _get_media_type(self, url: str) -> str:
+        """Determine media type based on file extension."""
+        url_lower = url.lower()
+        if any(ext in url_lower for ext in ['.jpg', '.jpeg', '.png', '.gif', '.webp']):
+            return "image"
+        elif any(ext in url_lower for ext in ['.mp4', '.mov', '.avi', '.mkv', '.webm']):
+            return "video"
+        else:
+            return "file"
+    
     def update_post(self, post_id: str, new_message: str) -> dict[str, Any]:
         return self._request("POST", f"{post_id}", {"message": new_message})
 

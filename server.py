@@ -226,6 +226,19 @@ def send_dm_to_user(user_id: str, message: str) -> dict[str, Any]:
     return manager.send_dm_to_user(user_id, message)
 
 @mcp.tool()
+def send_dm_media_to_user(user_id: str, message: str, media_urls: list[str]) -> dict[str, Any]:
+    """Send a direct message with media attachments (images/videos) to a user.
+    Input: user_id (str), message (str), media_urls (list[str])
+    Output: dict with results from text message and all media attachments
+    
+    The media_urls can contain:
+    - HTTPS URLs to images or videos
+    - Local file paths (will be treated as URLs by Facebook API)
+    - Supported formats: JPG, PNG, GIF, WebP for images; MP4, MOV, AVI, MKV, WebM for videos
+    """
+    return manager.send_dm_media_to_user(user_id, message, media_urls)
+
+@mcp.tool()
 def update_post(post_id: str, new_message: str) -> dict[str, Any]:
     """Updates an existing post's message.
     Input: post_id (str), new_message (str)
