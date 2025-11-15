@@ -151,3 +151,53 @@ class FacebookAPI:
     def get_post_share_count(self, post_id: str) -> int:
         data = self._request("GET", f"{post_id}", {"fields": "shares"})
         return data.get("shares", {}).get("count", 0)
+    
+    def create_storie_list_media(self, media_urls: list[str]) -> dict[str, Any]:
+        """Create and publish Facebook Stories from a list of media URLs.
+        
+        Args:
+            media_urls: List of URLs to images or videos (local file paths or HTTPS URLs)
+        
+        Returns:
+            dict: Response with results from all story creations
+        """
+        story_responses = []
+        
+        for media_url in media_urls:
+            media_type = self._get_media_type(media_url)
+            
+            if media_type == "image":
+                # Create image story
+                params = {
+                    "source": media_url,
+                    "published": True
+                }
+                response = self._request("POST", f"{PAGE_ID}/photos", params)
+                
+            elif media_type == "video":
+                # Create video story
+                params = {
+                    "source": media_url,
+                    "published": True,
+                    "content_category": "OTHER"
+                }
+                response = self._request("POST", f"{PAGE_ID}/videos", params)
+                
+            else:
+                # Skip unsupported file types for stories
+                response = {
+                    "error": f"Unsupported media type for story: {media_url}",
+                    "supported_formats": "Images: JPG, PNG, GIF, WebP | Videos: MP4, MOV, AVI, MKV, WebM"
+                }
+            
+            story_responses.append({
+                "media_url": media_url,
+                "media_type": media_type,
+                "response": response
+            })
+        
+        return {
+            "stories_created": len([r for r in story_responses if "error" not in r["response"]]),
+            "total_media_processed": len(media_urls),
+            "results": story_responses
+        }

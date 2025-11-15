@@ -287,3 +287,17 @@ def bulk_hide_comments(comment_ids: list[str]) -> list[dict[str, Any]]:
     """Hide multiple comments by ID."""
     return manager.bulk_hide_comments(comment_ids)
 
+@mcp.tool()
+def create_storie_list_media(media_urls: list[str]) -> dict[str, Any]:
+    """Create and publish Facebook Stories from a list of media URLs.
+    Input: media_urls (list[str])
+    Output: dict with results from all story creations
+    
+    The media_urls can contain:
+    - HTTPS URLs to images or videos
+    - Local file paths (will be treated as URLs by Facebook API)
+    - Supported formats: JPG, PNG, GIF, WebP for images; MP4, MOV, AVI, MKV, WebM for videos
+    - Each media URL will create a separate story
+    """
+    return manager.create_storie_list_media(media_urls)
+

@@ -161,3 +161,14 @@ class Manager:
             res = self.api.hide_comment(cid)
             results.append({"comment_id": cid, "result": res})
         return results
+    
+    def create_storie_list_media(self, media_urls: list[str]) -> dict[str, Any]:
+        """Create and publish Facebook Stories from a list of media URLs.
+        
+        Args:
+            media_urls: List of URLs to images or videos (can be local paths or HTTPS URLs)
+        
+        Returns:
+            dict: Response with results from all story creations
+        """
+        return self.api.create_storie_list_media(media_urls)
