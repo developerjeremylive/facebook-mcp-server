@@ -267,3 +267,147 @@ class FacebookAPI:
         selected_template = random.choice(viral_templates)
         
         return selected_template
+    
+    def post_media_to_facebook(self, media_urls: list[str], content_prompt: str) -> dict[str, Any]:
+        """Post multiple media files (images/videos) with auto-generated viral copyright text.
+        
+        Args:
+            media_urls: List of URLs to images or videos (local file paths or HTTPS URLs)
+            content_prompt: Description of the media content to generate viral copyright text
+        
+        Returns:
+            dict: Response with results from all media posts and generated copyright text
+        """
+        if not media_urls:
+            return {
+                "error": "No media URLs provided",
+                "message": "At least one media URL is required"
+            }
+        
+        # Generate viral copyright text based on content prompt
+        viral_copyright_text = self._generate_viral_copyright_text(content_prompt)
+        
+        # Separate images and videos
+        images = []
+        videos = []
+        unsupported = []
+        
+        for media_url in media_urls:
+            media_type = self._get_media_type(media_url)
+            if media_type == "image":
+                images.append(media_url)
+            elif media_type == "video":
+                videos.append(media_url)
+            else:
+                unsupported.append(media_url)
+        
+        # Results container
+        results = {
+            "generated_copyright_text": viral_copyright_text,
+            "original_prompt": content_prompt,
+            "total_media_processed": len(media_urls),
+            "images_posted": 0,
+            "videos_posted": 0,
+            "unsupported_files": len(unsupported),
+            "posts_created": [],
+            "errors": []
+        }
+        
+        # Post images (Facebook allows multiple images in one post via album)
+        if images:
+            try:
+                # For multiple images, create an album post
+                if len(images) == 1:
+                    # Single image post
+                    params = {
+                        "url": images[0],
+                        "caption": viral_copyright_text,
+                        "published": True
+                    }
+                    response = self._request("POST", f"{PAGE_ID}/photos", params)
+                    if "error" not in response:
+                        results["images_posted"] = 1
+                        results["posts_created"].append({
+                            "type": "image",
+                            "media_urls": images,
+                            "response": response
+                        })
+                    else:
+                        results["errors"].append({
+                            "type": "image",
+                            "media_urls": images,
+                            "error": response
+                        })
+                else:
+                    # Multiple images - create album
+                    # Note: Facebook Graph API album creation is complex, so we'll post images individually
+                    for i, image_url in enumerate(images):
+                        caption = viral_copyright_text if i == 0 else f"Imagen {i+1} - {content_prompt}"
+                        params = {
+                            "url": image_url,
+                            "caption": caption,
+                            "published": True
+                        }
+                        response = self._request("POST", f"{PAGE_ID}/photos", params)
+                        if "error" not in response:
+                            results["images_posted"] += 1
+                            results["posts_created"].append({
+                                "type": "image",
+                                "media_url": image_url,
+                                "response": response
+                            })
+                        else:
+                            results["errors"].append({
+                                "type": "image",
+                                "media_url": image_url,
+                                "error": response
+                            })
+            except Exception as e:
+                results["errors"].append({
+                    "type": "image_processing",
+                    "error": str(e)
+                })
+        
+        # Post videos (each video needs its own post)
+        for video_url in videos:
+            try:
+                params = {
+                    "source": video_url,
+                    "description": viral_copyright_text,
+                    "published": True,
+                    "content_category": "OTHER"
+                }
+                response = self._request("POST", f"{PAGE_ID}/videos", params)
+                if "error" not in response:
+                    results["videos_posted"] += 1
+                    results["posts_created"].append({
+                        "type": "video",
+                        "media_url": video_url,
+                        "response": response
+                    })
+                else:
+                    results["errors"].append({
+                        "type": "video",
+                        "media_url": video_url,
+                        "error": response
+                    })
+            except Exception as e:
+                results["errors"].append({
+                    "type": "video_processing",
+                    "media_url": video_url,
+                    "error": str(e)
+                })
+        
+        # Add unsupported files info
+        if unsupported:
+            results["errors"].append({
+                "type": "unsupported_files",
+                "files": unsupported,
+                "message": "Unsupported file types. Supported: JPG, PNG, GIF, WebP (images), MP4, MOV, AVI, MKV, WebM (videos)"
+            })
+        
+        # Summary
+        results["success"] = len(results["posts_created"]) > 0
+        results["total_posts_created"] = len(results["posts_created"])
+        
+        return results

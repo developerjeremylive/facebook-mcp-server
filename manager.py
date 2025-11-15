@@ -184,3 +184,15 @@ class Manager:
             dict: Response from Facebook Graph API with generated copyright text
         """
         return self.api.post_video_to_facebook(video_url, content_prompt)
+    
+    def post_media_to_facebook(self, media_urls: list[str], content_prompt: str) -> dict[str, Any]:
+        """Post multiple media files (images/videos) with auto-generated viral copyright text.
+        
+        Args:
+            media_urls: List of URLs to images or videos (can be local paths or HTTPS URLs)
+            content_prompt: Description of the media content to generate viral copyright text
+        
+        Returns:
+            dict: Response with results from all media posts and generated copyright text
+        """
+        return self.api.post_media_to_facebook(media_urls, content_prompt)

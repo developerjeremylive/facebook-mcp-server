@@ -320,3 +320,29 @@ def post_video_to_facebook(video_url: str, content_prompt: str) -> dict[str, Any
     """
     return manager.post_video_to_facebook(video_url, content_prompt)
 
+@mcp.tool()
+def post_media_to_facebook(media_urls: list[str], content_prompt: str) -> dict[str, Any]:
+    """Post multiple media files (images/videos) with auto-generated viral copyright text.
+    Input: media_urls (list[str]), content_prompt (str)
+    Output: dict with results from all media posts and generated copyright text
+    
+    The media_urls can contain:
+    - HTTPS URLs to images or videos
+    - Local file paths (will be treated as URLs by Facebook API)
+    - Mixed content: images and videos in the same list
+    - Supported formats: JPG, PNG, GIF, WebP for images; MP4, MOV, AVI, MKV, WebM for videos
+    
+    The content_prompt should describe what the media content is about, and the tool will:
+    - Generate viral copyright text with engaging elements, emojis, legal notices, and call-to-actions
+    - Post images (single image or multiple images as separate posts)
+    - Post videos (each video as a separate post)
+    - Handle mixed media types automatically
+    - Provide detailed results for each media file
+    
+    Example: post_media_to_facebook(
+        ["image1.jpg", "video1.mp4", "image2.png"], 
+        "Colección de recetas de cocina italiana"
+    )
+    """
+    return manager.post_media_to_facebook(media_urls, content_prompt)
+
