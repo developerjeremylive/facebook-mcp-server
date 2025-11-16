@@ -379,3 +379,31 @@ def get_my_stories(limit: str = None) -> dict[str, Any]:
     
     return manager.get_my_stories(parsed_limit)
 
+@mcp.tool()
+def get_my_last_post() -> dict[str, Any]:
+    """Get your most recent Facebook post with comprehensive details and engagement metrics.
+    Input: None
+    Output: dict with complete post data, engagement metrics, and metadata
+    
+    This tool retrieves your most recent Facebook post with detailed information including:
+    - Post content (message, description, caption, story)
+    - Media information (pictures, videos, links)
+    - Engagement metrics (likes, comments, reactions, shares)
+    - Timestamps (creation and last update times)
+    - Post type and privacy settings
+    - Location information if available
+    
+    The response provides both individual engagement counts and total engagement summary
+    for easy analysis of your latest post's performance.
+    
+    Example usage:
+    - get_my_last_post() - Gets your most recent post with all details
+    
+    Perfect for:
+    - Checking your latest post performance
+    - Getting post ID for further operations
+    - Monitoring recent engagement
+    - Analyzing post content and metadata
+    """
+    return manager.get_my_last_post()
+

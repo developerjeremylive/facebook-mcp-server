@@ -302,6 +302,100 @@ class FacebookAPI:
                 "limit_applied": limit
             }
     
+    def get_my_last_post(self) -> dict[str, Any]:
+        """Get the most recent post from the page.
+        
+        Returns:
+            dict: Response with the last post data and metadata
+        """
+        try:
+            # Get the most recent post with comprehensive fields
+            params = {
+                "fields": "id,message,created_time,updated_time,permalink_url,full_picture,picture,type,status_type,story,description,caption,name,link,source,place,privacy,shares,likes.summary(true),comments.summary(true),reactions.summary(true)",
+                "limit": 1  # Only get the most recent post
+            }
+            
+            response = self._request("GET", f"{PAGE_ID}/posts", params)
+            
+            if "error" in response:
+                return {
+                    "error": f"Failed to retrieve last post: {response.get('error', {}).get('message', 'Unknown error')}",
+                    "data": None,
+                    "found": False
+                }
+            
+            posts_data = response.get("data", [])
+            
+            if not posts_data:
+                return {
+                    "message": "No posts found on this page",
+                    "data": None,
+                    "found": False,
+                    "total_posts_on_page": 0
+                }
+            
+            # Get the first (most recent) post
+            last_post = posts_data[0]
+            
+            # Enhance the post data with additional metrics
+            enhanced_post = {
+                "id": last_post.get("id"),
+                "message": last_post.get("message", ""),
+                "created_time": last_post.get("created_time"),
+                "updated_time": last_post.get("updated_time"),
+                "permalink_url": last_post.get("permalink_url"),
+                "full_picture": last_post.get("full_picture"),
+                "picture": last_post.get("picture"),
+                "type": last_post.get("type"),
+                "status_type": last_post.get("status_type"),
+                "story": last_post.get("story", ""),
+                "description": last_post.get("description", ""),
+                "caption": last_post.get("caption", ""),
+                "name": last_post.get("name", ""),
+                "link": last_post.get("link"),
+                "source": last_post.get("source"),
+                "place": last_post.get("place"),
+                "privacy": last_post.get("privacy", {}),
+                
+                # Engagement metrics
+                "likes_count": last_post.get("likes", {}).get("summary", {}).get("total_count", 0),
+                "comments_count": last_post.get("comments", {}).get("summary", {}).get("total_count", 0),
+                "reactions_count": last_post.get("reactions", {}).get("summary", {}).get("total_count", 0),
+                "shares_count": last_post.get("shares", {}).get("count", 0),
+                
+                # Raw engagement data for detailed analysis
+                "engagement_summary": {
+                    "likes": last_post.get("likes", {}).get("summary", {}),
+                    "comments": last_post.get("comments", {}).get("summary", {}),
+                    "reactions": last_post.get("reactions", {}).get("summary", {}),
+                    "shares": last_post.get("shares", {})
+                }
+            }
+            
+            return {
+                "data": enhanced_post,
+                "found": True,
+                "message": "Successfully retrieved the most recent post",
+                "post_age_info": {
+                    "created_time": enhanced_post["created_time"],
+                    "last_updated": enhanced_post["updated_time"]
+                },
+                "engagement_totals": {
+                    "total_likes": enhanced_post["likes_count"],
+                    "total_comments": enhanced_post["comments_count"], 
+                    "total_reactions": enhanced_post["reactions_count"],
+                    "total_shares": enhanced_post["shares_count"],
+                    "total_engagement": enhanced_post["likes_count"] + enhanced_post["comments_count"] + enhanced_post["reactions_count"] + enhanced_post["shares_count"]
+                }
+            }
+            
+        except Exception as e:
+            return {
+                "error": f"Exception occurred while retrieving last post: {str(e)}",
+                "data": None,
+                "found": False
+            }
+    
     def post_video_to_facebook(self, video_url: str, content_prompt: str) -> dict[str, Any]:
         """Post a video with viral copyright text generated from a content prompt.
         

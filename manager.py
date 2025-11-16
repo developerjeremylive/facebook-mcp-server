@@ -207,3 +207,11 @@ class Manager:
             dict: Response with list of stories and metadata
         """
         return self.api.get_my_stories(limit)
+    
+    def get_my_last_post(self) -> dict[str, Any]:
+        """Get the most recent post from the page.
+        
+        Returns:
+            dict: Response with the last post data and comprehensive metadata
+        """
+        return self.api.get_my_last_post()
