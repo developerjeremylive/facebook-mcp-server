@@ -54,6 +54,13 @@ This MCP provides a suite of AI-callable tools that connect directly to a Facebo
 | `get_post_reactions_breakdown`   | Get all reaction counts for a post in one call.              |
 | `bulk_delete_comments`           | Delete multiple comments by ID.                              |
 | `bulk_hide_comments`             | Hide multiple comments by ID.                    |
+| `create_page_media_post`         | 🔥 **NEW** Create viral media posts on specific pages with auto-generated copyright text. |
+| `post_media_to_facebook`         | Post multiple media files with auto-generated viral copyright text. |
+| `post_video_to_facebook`         | Post videos with viral copyright text generated from content description. |
+| `create_storie_list_media`       | Create Facebook Stories from a list of media URLs. |
+| `send_dm_media_to_user`          | Send direct messages with media attachments to users. |
+| `get_my_stories`                 | Get recent stories from your Facebook page. |
+| `get_my_last_post`               | Get your most recent post with comprehensive engagement metrics. |
 
 ---
 
@@ -117,6 +124,47 @@ To set up the FacebookMCP in Clade:
 ## ✅ You’re Ready to Go!
 
 That’s it — your Facebook MCP server is now fully configured and ready to power Claude Desktop. You can now post, moderate, and measure engagement all through natural language prompts!
+
+---
+
+## 🔥 NEW: create_page_media_post Tool
+
+### The Ultimate Viral Content Creator
+
+The new `create_page_media_post` tool is a game-changer for social media marketing. It combines:
+
+- **🎯 Page-Specific Posting**: Target any Facebook page by ID
+- **🚀 Viral Text Generation**: Auto-creates engaging copyright text with emojis, legal notices, and call-to-actions
+- **📱 Multi-Media Support**: Handles images, videos, and mixed content seamlessly
+- **⚡ Instant Engagement**: Built-in viral elements designed to maximize likes, shares, and comments
+- **🛡️ Copyright Protection**: Automatic legal notices and usage terms
+
+#### Example Usage:
+```python
+create_page_media_post(
+    page_id="123456789012345",
+    media_urls=["image1.jpg", "video1.mp4"],
+    content_prompt="Tutorial de cocina italiana casera"
+)
+```
+
+**Generated Viral Text Example:**
+```
+🔥 TUTORIAL DE COCINA ITALIANA CASERA 🔥
+
+✨ CONTENIDO ORIGINAL EXCLUSIVO ✨
+
+© Todos los derechos reservados. Este contenido es propiedad intelectual protegida.
+
+🚫 PROHIBIDA su reproducción, distribución o uso sin autorización expresa.
+✅ SÍ se permite compartir desde esta publicación
+
+💯 ¡COMPARTE si te gustó! 👇
+
+#ViralContent #Original #Copyright #Exclusive #Trending
+```
+
+See `CREATE_PAGE_MEDIA_POST_DOCS.md` for complete documentation and examples.
 
 ---
 

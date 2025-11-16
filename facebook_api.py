@@ -440,28 +440,257 @@ class FacebookAPI:
         """Generate viral copyright text based on content description.
         
         Args:
-            content_prompt: Description of the video content
+            content_prompt: Description of the content
             
         Returns:
             str: Generated viral copyright text for Facebook
         """
-        # Viral copyright text templates with engaging elements
-        viral_templates = [
-            f"🔥 {content_prompt} 🔥\n\n✨ CONTENIDO ORIGINAL EXCLUSIVO ✨\n\n© Todos los derechos reservados. Este video es propiedad intelectual protegida.\n\n🚫 PROHIBIDA su reproducción, distribución o uso sin autorización expresa.\n\n💯 ¡COMPARTE si te gustó! 👇\n\n#ViralContent #Original #Copyright #Exclusive",
-            
-            f"🎬 {content_prompt} 🎬\n\n⚡ CONTENIDO VIRAL ORIGINAL ⚡\n\n🔒 Material protegido por derechos de autor\n© Creación original - Todos los derechos reservados\n\n❌ NO se permite copiar, descargar o redistribuir\n✅ SÍ se permite compartir desde esta publicación\n\n🔥 ¡Dale LIKE y COMPARTE! 🔥\n\n#Viral #Original #Protected #ShareDontSteal",
-            
-            f"💥 {content_prompt} 💥\n\n🌟 CONTENIDO EXCLUSIVO Y ORIGINAL 🌟\n\n⚠️ AVISO LEGAL:\n© Este video está protegido por derechos de autor\n🚫 Prohibida su descarga o reutilización\n✅ Permitido compartir desde aquí\n\n🔥 ¡Si te encantó, COMPÁRTELO! 🔥\n👆 ¡Y no olvides seguirnos para más contenido!\n\n#ExclusiveContent #Copyright #ViralVideo #Original",
-            
-            f"🚀 {content_prompt} 🚀\n\n✨ MATERIAL ORIGINAL PROTEGIDO ✨\n\n📝 TÉRMINOS DE USO:\n• © Contenido con derechos reservados\n• 🚫 No descargar ni reutilizar\n• ✅ Compartir desde esta publicación\n• 💬 Comentar y etiquetar amigos\n\n🔥 ¡HAZLO VIRAL compartiendo! 🔥\n\n#OriginalContent #Viral #Copyright #ShareTheJoy"
+        import random
+        import datetime
+        
+        # Dynamic elements for viral content
+        fire_emojis = ["🔥", "💥", "⚡", "🌟", "✨", "🚀", "💎", "🎯"]
+        engagement_calls = [
+            "¡COMPARTE si te gustó!",
+            "¡Dale LIKE y COMPARTE!",
+            "¡Si te encantó, COMPÁRTELO!",
+            "¡HAZLO VIRAL compartiendo!",
+            "¡Comparte con tus amigos!",
+            "¡No olvides dar LIKE!",
+            "¡Etiqueta a quien le gustaría esto!"
         ]
         
-        # Select a random template or rotate based on content
-        import random
+        copyright_notices = [
+            "© Todos los derechos reservados. Este contenido es propiedad intelectual protegida.",
+            "© Creación original - Todos los derechos reservados",
+            "© Este contenido está protegido por derechos de autor",
+            "© Material original protegido por ley de derechos de autor",
+            "© Contenido exclusivo con derechos reservados"
+        ]
+        
+        restrictions = [
+            "🚫 PROHIBIDA su reproducción, distribución o uso sin autorización expresa.",
+            "❌ NO se permite copiar, descargar o redistribuir",
+            "🚫 Prohibida su descarga o reutilización sin permiso",
+            "❌ No autorizado para descarga o uso comercial",
+            "🚫 Prohibido el uso no autorizado de este material"
+        ]
+        
+        permissions = [
+            "✅ SÍ se permite compartir desde esta publicación",
+            "✅ Permitido compartir desde aquí únicamente",
+            "✅ Compartir desde esta publicación está permitido",
+            "✅ Solo se permite compartir desde el post original",
+            "✅ Autorizado compartir manteniendo la fuente"
+        ]
+        
+        hashtag_sets = [
+            "#ViralContent #Original #Copyright #Exclusive #Trending",
+            "#Viral #Original #Protected #ShareDontSteal #Exclusive",
+            "#ExclusiveContent #Copyright #ViralVideo #Original #Trending",
+            "#OriginalContent #Viral #Copyright #ShareTheJoy #Exclusive",
+            "#ContentCreator #Original #Viral #Protected #Trending",
+            "#ExclusivePost #Copyright #ViralContent #Original #MustShare"
+        ]
+        
+        # Generate current year for copyright
+        current_year = datetime.datetime.now().year
+        
+        # Select random elements
+        fire_emoji = random.choice(fire_emojis)
+        engagement_call = random.choice(engagement_calls)
+        copyright_notice = random.choice(copyright_notices)
+        restriction = random.choice(restrictions)
+        permission = random.choice(permissions)
+        hashtags = random.choice(hashtag_sets)
+        
+        # Create different viral templates
+        viral_templates = [
+            # Template 1: Classic viral format
+            f"{fire_emoji} {content_prompt.upper()} {fire_emoji}\n\n✨ CONTENIDO ORIGINAL EXCLUSIVO ✨\n\n{copyright_notice}\n\n{restriction}\n\n{permission}\n\n💯 {engagement_call} 👇\n\n{hashtags}",
+            
+            # Template 2: Professional with legal emphasis
+            f"🎬 {content_prompt} 🎬\n\n⚡ CONTENIDO VIRAL ORIGINAL ⚡\n\n🔒 Material protegido por derechos de autor {current_year}\n{copyright_notice}\n\n{restriction}\n{permission}\n\n🔥 {engagement_call} 🔥\n\n{hashtags}",
+            
+            # Template 3: Warning style with engagement
+            f"{fire_emoji} {content_prompt} {fire_emoji}\n\n🌟 CONTENIDO EXCLUSIVO Y ORIGINAL 🌟\n\n⚠️ AVISO LEGAL:\n{copyright_notice}\n{restriction}\n{permission}\n\n🔥 {engagement_call} 🔥\n👆 ¡Y no olvides seguirnos para más contenido!\n\n{hashtags}",
+            
+            # Template 4: Terms of use format
+            f"🚀 {content_prompt} 🚀\n\n✨ MATERIAL ORIGINAL PROTEGIDO ✨\n\n📝 TÉRMINOS DE USO:\n• {copyright_notice}\n• {restriction}\n• {permission}\n• 💬 Comentar y etiquetar amigos está permitido\n\n🔥 {engagement_call} 🔥\n\n{hashtags}",
+            
+            # Template 5: Creator focused
+            f"{fire_emoji} {content_prompt} {fire_emoji}\n\n👨‍💻 CREACIÓN ORIGINAL EXCLUSIVA 👩‍💻\n\n{copyright_notice}\n\n🛡️ PROTECCIÓN LEGAL:\n{restriction}\n{permission}\n\n💪 {engagement_call}\n🎯 ¡Síguenos para más contenido original!\n\n{hashtags}",
+            
+            # Template 6: Community engagement
+            f"💎 {content_prompt} 💎\n\n🌟 CONTENIDO PREMIUM ORIGINAL 🌟\n\n{copyright_notice}\n\n📋 REGLAS DE COMPARTIR:\n❌ No descargar o reutilizar\n✅ Compartir desde aquí\n💬 Comentar tu opinión\n🏷️ Etiquetar amigos\n\n🚀 {engagement_call}\n\n{hashtags}"
+        ]
+        
+        # Select a random template
         selected_template = random.choice(viral_templates)
         
         return selected_template
     
+    def create_page_media_post(self, page_id: str, media_urls: list[str], content_prompt: str, page_access_token: str = None) -> dict[str, Any]:
+        """Create a media post on a specific Facebook page with auto-generated viral copyright text.
+        
+        Args:
+            page_id: The Facebook Page ID where the post will be created
+            media_urls: List of URLs to images or videos (local file paths or HTTPS URLs)
+            content_prompt: Description of the media content to generate viral copyright text
+            page_access_token: Optional page access token. If not provided, uses default from config
+        
+        Returns:
+            dict: Response with results from all media posts and generated copyright text
+        """
+        if not media_urls:
+            return {
+                "error": "No media URLs provided",
+                "message": "At least one media URL is required"
+            }
+        
+        # Use provided token or fall back to default
+        if page_access_token:
+            # Temporarily use the provided token for this request
+            original_token = PAGE_ACCESS_TOKEN
+            import config
+            config.PAGE_ACCESS_TOKEN = page_access_token
+        else:
+            original_token = None
+        
+        # Generate viral copyright text based on content prompt
+        viral_copyright_text = self._generate_viral_copyright_text(content_prompt)
+        
+        # Separate images and videos
+        images = []
+        videos = []
+        unsupported = []
+        
+        for media_url in media_urls:
+            media_type = self._get_media_type(media_url)
+            if media_type == "image":
+                images.append(media_url)
+            elif media_type == "video":
+                videos.append(media_url)
+            else:
+                unsupported.append(media_url)
+        
+        # Results container
+        results = {
+            "page_id": page_id,
+            "generated_copyright_text": viral_copyright_text,
+            "original_prompt": content_prompt,
+            "total_media_processed": len(media_urls),
+            "images_posted": 0,
+            "videos_posted": 0,
+            "unsupported_files": len(unsupported),
+            "posts_created": [],
+            "errors": []
+        }
+        
+        try:
+            # Post images
+            if images:
+                try:
+                    if len(images) == 1:
+                        # Single image post
+                        params = {
+                            "url": images[0],
+                            "caption": viral_copyright_text,
+                            "published": True
+                        }
+                        response = self._request("POST", f"{page_id}/photos", params)
+                        if "error" not in response:
+                            results["images_posted"] = 1
+                            results["posts_created"].append({
+                                "type": "image",
+                                "media_urls": images,
+                                "response": response
+                            })
+                        else:
+                            results["errors"].append({
+                                "type": "image",
+                                "media_urls": images,
+                                "error": response
+                            })
+                    else:
+                        # Multiple images - post individually with viral text
+                        for i, image_url in enumerate(images):
+                            caption = viral_copyright_text if i == 0 else f"Imagen {i+1} - {content_prompt}"
+                            params = {
+                                "url": image_url,
+                                "caption": caption,
+                                "published": True
+                            }
+                            response = self._request("POST", f"{page_id}/photos", params)
+                            if "error" not in response:
+                                results["images_posted"] += 1
+                                results["posts_created"].append({
+                                    "type": "image",
+                                    "media_url": image_url,
+                                    "response": response
+                                })
+                            else:
+                                results["errors"].append({
+                                    "type": "image",
+                                    "media_url": image_url,
+                                    "error": response
+                                })
+                except Exception as e:
+                    results["errors"].append({
+                        "type": "image_processing",
+                        "error": str(e)
+                    })
+            
+            # Post videos
+            for video_url in videos:
+                try:
+                    params = {
+                        "source": video_url,
+                        "description": viral_copyright_text,
+                        "published": True,
+                        "content_category": "OTHER"
+                    }
+                    response = self._request("POST", f"{page_id}/videos", params)
+                    if "error" not in response:
+                        results["videos_posted"] += 1
+                        results["posts_created"].append({
+                            "type": "video",
+                            "media_url": video_url,
+                            "response": response
+                        })
+                    else:
+                        results["errors"].append({
+                            "type": "video",
+                            "media_url": video_url,
+                            "error": response
+                        })
+                except Exception as e:
+                    results["errors"].append({
+                        "type": "video_processing",
+                        "media_url": video_url,
+                        "error": str(e)
+                    })
+            
+            # Add unsupported files info
+            if unsupported:
+                results["errors"].append({
+                    "type": "unsupported_files",
+                    "files": unsupported,
+                    "message": "Unsupported file types. Supported: JPG, PNG, GIF, WebP (images), MP4, MOV, AVI, MKV, WebM (videos)"
+                })
+            
+        finally:
+            # Restore original token
+            if page_access_token and original_token:
+                import config
+                config.PAGE_ACCESS_TOKEN = original_token
+        
+        # Summary
+        results["success"] = len(results["posts_created"]) > 0
+        results["total_posts_created"] = len(results["posts_created"])
+        
+        return results
+
     def post_media_to_facebook(self, media_urls: list[str], content_prompt: str) -> dict[str, Any]:
         """Post multiple media files (images/videos) with auto-generated viral copyright text.
         

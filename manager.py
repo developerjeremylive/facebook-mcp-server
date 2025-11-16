@@ -185,6 +185,20 @@ class Manager:
         """
         return self.api.post_video_to_facebook(video_url, content_prompt)
     
+    def create_page_media_post(self, page_id: str, media_urls: list[str], content_prompt: str, page_access_token: str = None) -> dict[str, Any]:
+        """Create a media post on a specific Facebook page with auto-generated viral copyright text.
+        
+        Args:
+            page_id: The Facebook Page ID where the post will be created
+            media_urls: List of URLs to images or videos (can be local paths or HTTPS URLs)
+            content_prompt: Description of the media content to generate viral copyright text
+            page_access_token: Optional page access token. If not provided, uses default from config
+        
+        Returns:
+            dict: Response with results from all media posts and generated copyright text
+        """
+        return self.api.create_page_media_post(page_id, media_urls, content_prompt, page_access_token)
+
     def post_media_to_facebook(self, media_urls: list[str], content_prompt: str) -> dict[str, Any]:
         """Post multiple media files (images/videos) with auto-generated viral copyright text.
         
