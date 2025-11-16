@@ -202,6 +202,106 @@ class FacebookAPI:
             "results": story_responses
         }
     
+    def get_my_stories(self, limit: int = None) -> dict[str, Any]:
+        """Get the list of recent stories from the page.
+        
+        Args:
+            limit: Optional number of stories to retrieve. If None, gets all available stories.
+        
+        Returns:
+            dict: Response with list of stories and metadata
+        """
+        # Build parameters for the API request
+        params = {
+            "fields": "id,created_time,permalink_url,media_type,media_url,thumbnail_url"
+        }
+        
+        # Add limit if specified by user
+        if limit is not None and limit > 0:
+            params["limit"] = limit
+        
+        # Get stories from the page
+        # Note: Facebook Graph API uses different endpoints for stories
+        # We'll try to get recent media posts that could include stories
+        try:
+            # First try to get stories directly (if available)
+            stories_response = self._request("GET", f"{PAGE_ID}/stories", params)
+            
+            # If stories endpoint doesn't work, fallback to recent media
+            if "error" in stories_response:
+                # Fallback: get recent photos and videos which might include story content
+                media_params = {
+                    "fields": "id,created_time,permalink_url,source,images,videos,caption",
+                    "type": "uploaded"
+                }
+                if limit is not None and limit > 0:
+                    media_params["limit"] = limit
+                
+                photos_response = self._request("GET", f"{PAGE_ID}/photos", media_params)
+                videos_response = self._request("GET", f"{PAGE_ID}/videos", media_params)
+                
+                # Combine and format the results
+                all_media = []
+                
+                # Add photos
+                if "data" in photos_response:
+                    for photo in photos_response["data"]:
+                        all_media.append({
+                            "id": photo.get("id"),
+                            "created_time": photo.get("created_time"),
+                            "permalink_url": photo.get("permalink_url"),
+                            "media_type": "photo",
+                            "media_url": photo.get("source"),
+                            "thumbnail_url": photo.get("images", [{}])[0].get("source") if photo.get("images") else None,
+                            "caption": photo.get("caption", "")
+                        })
+                
+                # Add videos
+                if "data" in videos_response:
+                    for video in videos_response["data"]:
+                        all_media.append({
+                            "id": video.get("id"),
+                            "created_time": video.get("created_time"),
+                            "permalink_url": video.get("permalink_url"),
+                            "media_type": "video",
+                            "media_url": video.get("source"),
+                            "thumbnail_url": video.get("picture"),
+                            "caption": video.get("description", "")
+                        })
+                
+                # Sort by creation time (most recent first)
+                all_media.sort(key=lambda x: x.get("created_time", ""), reverse=True)
+                
+                # Apply limit if specified
+                if limit is not None and limit > 0:
+                    all_media = all_media[:limit]
+                
+                return {
+                    "data": all_media,
+                    "total_count": len(all_media),
+                    "limit_applied": limit,
+                    "source": "fallback_media_endpoint",
+                    "message": "Retrieved recent media content (photos and videos) as story data"
+                }
+            
+            # If stories endpoint worked, return the stories
+            stories_data = stories_response.get("data", [])
+            return {
+                "data": stories_data,
+                "total_count": len(stories_data),
+                "limit_applied": limit,
+                "source": "stories_endpoint",
+                "message": f"Retrieved {len(stories_data)} stories from page"
+            }
+            
+        except Exception as e:
+            return {
+                "error": f"Failed to retrieve stories: {str(e)}",
+                "data": [],
+                "total_count": 0,
+                "limit_applied": limit
+            }
+    
     def post_video_to_facebook(self, video_url: str, content_prompt: str) -> dict[str, Any]:
         """Post a video with viral copyright text generated from a content prompt.
         

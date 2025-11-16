@@ -346,3 +346,36 @@ def post_media_to_facebook(media_urls: list[str], content_prompt: str) -> dict[s
     """
     return manager.post_media_to_facebook(media_urls, content_prompt)
 
+@mcp.tool()
+def get_my_stories(limit: str = None) -> dict[str, Any]:
+    """Get the list of recent stories from your Facebook page.
+    Input: limit (str, optional) - Number of stories to retrieve. If not provided or empty, gets all available stories.
+    Output: dict with list of story objects, total count, and metadata
+    
+    This tool retrieves your recent Facebook stories/media content. You can specify how many stories
+    you want to see by providing a number in the limit parameter.
+    
+    Examples:
+    - get_my_stories() - Gets all available stories
+    - get_my_stories("5") - Gets the 5 most recent stories  
+    - get_my_stories("10") - Gets the 10 most recent stories
+    
+    The response includes:
+    - Story ID, creation time, permalink URL
+    - Media type (photo/video), media URL, thumbnail URL
+    - Caption/description if available
+    - Total count and applied limit information
+    """
+    # Parse limit parameter - convert string to int if provided
+    parsed_limit = None
+    if limit and limit.strip():
+        try:
+            parsed_limit = int(limit.strip())
+            if parsed_limit <= 0:
+                parsed_limit = None
+        except ValueError:
+            # If limit is not a valid number, ignore it and get all stories
+            parsed_limit = None
+    
+    return manager.get_my_stories(parsed_limit)
+

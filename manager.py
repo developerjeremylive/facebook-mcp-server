@@ -196,3 +196,14 @@ class Manager:
             dict: Response with results from all media posts and generated copyright text
         """
         return self.api.post_media_to_facebook(media_urls, content_prompt)
+    
+    def get_my_stories(self, limit: int = None) -> dict[str, Any]:
+        """Get the list of recent stories from the page.
+        
+        Args:
+            limit: Optional number of stories to retrieve. If None, gets all available stories.
+        
+        Returns:
+            dict: Response with list of stories and metadata
+        """
+        return self.api.get_my_stories(limit)
